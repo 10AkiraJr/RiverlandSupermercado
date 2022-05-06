@@ -1,0 +1,171 @@
+CREATE TABLE tbFuncionario(
+cod_funcionario SERIAL PRIMARY KEY,
+nome VARCHAR(100) NOT NULL,
+sexo INTEGER NOT NULL,
+cpf VARCHAR(14) NOT NULL,
+rg VARCHAR(20),
+data_nascimento VARCHAR(10),
+pis_nit VARCHAR(50),
+mae_nome VARCHAR(100) NOT NULL,
+pai_nome VARCHAR(100),
+email VARCHAR(100)
+);
+
+CREATE TABLE tbEndFuncionario(
+cod_funcionario SERIAL REFERENCES tbFuncionario(cod_funcionario),
+logadouro VARCHAR(100),
+numeroEndereco VARCHAR(10000),
+complemento VARCHAR(100),
+bairro VARCHAR(100),
+cep INTEGER,
+cidade VARCHAR(100),
+estado VARCHAR(100)
+);
+
+CREATE TABLE tbTelFuncionario(
+cod_funcionario SERIAL REFERENCES tbFuncionario(cod_funcionario),
+telefone INTEGER
+); 
+
+CREATE TABLE tbVinculoFunc(
+cod_funcionario SERIAL REFERENCES tbFuncionario(cod_funcionario),
+cargo VARCHAR(100)NOT NULL,
+salario NUMERIC(100,2) CHECK (salario > 0) NOT NULL,
+data_inicio VARCHAR(10) NOT NULL,
+data_fim VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE tbUsuarioFunc(
+cod_usuarioFunc SERIAL PRIMARY KEY,
+cod_funcionario SERIAL REFERENCES tbFuncionario(cod_funcionario),
+login VARCHAR(10) NOT NULL,
+senha VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE tbUsuarioAdmin(
+cod_usuarioAdmin SERIAL PRIMARY KEY,
+login VARCHAR(10) NOT NULL,
+senha VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE Usuario(
+cod_usuarioadmin SERIAL REFERENCES tbUsuarioAdmin(cod_Usuarioadmin),
+cod_usuariofunc SERIAL REFERENCES tbUsuarioFunc(cod_usuariofunc)
+);
+
+
+CREATE TABLE tbEntrada(
+data VARCHAR(10) NOT NULL,
+cod_entrada SERIAL PRIMARY KEY,
+descricao VARCHAR(50) NOT NULL,
+unid_medida VARCHAR(20) NOT NULL,
+quantidade SMALLINT NOT NULL,
+valorCompra NUMERIC(100,2) CHECK (valorCompra > 0) NOT NULL,
+valorVenda NUMERIC(100,2) CHECK (valorVenda > 0) NOT NULL
+);
+
+
+
+CREATE TABLE tbFornecedor(
+cod_fornecedor SERIAL PRIMARY KEY,
+razaoSocial VARCHAR(100) NOT NULL,
+cnpj VARCHAR(20) NOT NULL,
+inscEstadual VARCHAR(20),
+email VARCHAR(100)
+);
+
+CREATE TABLE tbEndFornecedor(
+cod_endfornecedor SERIAL PRIMARY KEY,
+cod_fornecedor SERIAL NOT NULL REFERENCES tbFornecedor(cod_fornecedor),
+logadouro VARCHAR(100),
+numeroEndereco VARCHAR(10000),
+complemento VARCHAR(100),
+bairro VARCHAR(100),
+cep INTEGER,
+cidade VARCHAR(100),
+estado VARCHAR(100)
+);
+
+CREATE TABLE tbTelFornecedor(
+cod_telfornecedor SERIAL PRIMARY KEY,
+cod_fornecedor SERIAL REFERENCES tbfornecedor(cod_fornecedor),
+telefone INTEGER
+);
+
+
+
+CREATE TABLE tbCliJuridico(
+cod_clijuridico INTEGER PRIMARY KEY,
+razaoSocial VARCHAR(100) NOT NULL,
+cnpj VARCHAR(20) NOT NULL,
+inscEstadual VARCHAR(20),
+email VARCHAR(100)
+);
+
+CREATE TABLE tbEndCliJuridico(
+cod_endclijuridico SERIAL PRIMARY KEY,
+cod_clijuridico INTEGER REFERENCES tbCliJuridico(cod_clijuridico),
+logadouro VARCHAR(100),
+numeroEndereco VARCHAR(10000),
+complemento VARCHAR(100),
+bairro VARCHAR(100),
+cep INTEGER,
+cidade VARCHAR(100),
+estado VARCHAR(100)
+);
+
+CREATE TABLE tbTelCliJuridico(
+cod_telclijuridico SERIAL PRIMARY KEY,
+cod_clijuridico INTEGER REFERENCES tbCliJuridico(cod_clijuridico),
+telefone INTEGER
+);
+
+
+
+CREATE TABLE tbCliFisico(
+cod_clifisico INTEGER PRIMARY KEY,
+nome VARCHAR(100) NOT NULL,
+cpf VARCHAR(20) NOT NULL,
+email VARCHAR(100)
+);
+
+CREATE TABLE tbEndCliFisico(
+cod_endclifisico SERIAL PRIMARY KEY,
+cod_clifisico INTEGER REFERENCES tbCliFisico(cod_clifisico),
+logadouro VARCHAR(100),
+numeroEndereco VARCHAR(10000),
+complemento VARCHAR(100),
+bairro VARCHAR(100),
+cep INTEGER,
+cidade VARCHAR(100),
+estado VARCHAR(100)
+);
+
+CREATE TABLE tbTelCliFisico(
+cod_telclijfisico SERIAL PRIMARY KEY,
+cod_clifisico INTEGER REFERENCES tbCliFisico(cod_clifisico),
+telefone INTEGER
+);
+
+
+CREATE TABLE tbCliente(
+cod_cliente SERIAL PRIMARY KEY,
+cod_clifisico INTEGER REFERENCES tbCliFisico(cod_clifisico),
+cod_clijuridico INTEGER REFERENCES tbCliJuridico(cod_clijuridico)
+);
+
+
+CREATE TABLE tbItenSaida(
+cod_saida SERIAL REFERENCES tbSaida(cod_saida),
+cod_entrada SERIAL REFERENCES tbEntrada(cod_Entrada),
+unid_medida VARCHAR(20) NOT NULL,
+quantidade SMALLINT NOT NULL,
+valor_unitvenda NUMERIC(100,2) CHECK (valor_unitvenda > 0) NOT NULL,
+valor_totalvenda NUMERIC(100,2) CHECK (valor_totalvenda > 0) NOT NULL
+);
+
+CREATE TABLE tbSaida(
+cod_saida SERIAL PRIMARY KEY,
+cod_cliente SERIAL REFERENCES tbCliente(cod_cliente),
+valor_globalvenda NUMERIC(100,2) CHECK (valor_globalvenda > 0) NOT NULL
+);
